@@ -18,6 +18,7 @@ export default function More() {
       </Card>
       <Card style={{ padding: 0, overflow: 'hidden' }}>
         {can(user, 'customers') ? <ListItem title="Customers" subtitle="Deni balances and repayments" onPress={() => router.push('/customers')} /> : null}
+        {can(user, 'view_suppliers') ? <ListItem title="Suppliers" subtitle="What you owe, purchases and payments" onPress={() => router.push('/suppliers')} /> : null}
         {can(user, 'sell') ? <ListItem title="Held sales" onPress={() => router.push('/held')} /> : null}
         {can(user, 'cashup') ? <ListItem title="Cash-up" subtitle="End of shift" onPress={() => router.push('/cashup')} /> : null}
         {can(user, 'reports') ? <ListItem title="Money and reports" subtitle="Today's sales, profit and deni" onPress={() => router.push('/reports')} /> : null}
