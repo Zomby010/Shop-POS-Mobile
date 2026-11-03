@@ -423,3 +423,22 @@ export interface DocDetail extends DocSummary {
   converted_from: { id: number; code: string } | null; converted_to: { id: number; code: string } | null; lines: DocLine[];
 }
 export interface DocChoices { kinds: Choice[]; party_types: Choice[]; statuses: Choice[] }
+
+// ---------------------------------------------------------------- owner tools
+
+export interface Today {
+  total: Dec; count: number; cash: Dec; mpesa: Dec; credit: Dec; held_count: number; sales_scope: Level;
+  low_stock: { id: number; name: string; unit: string; stock_qty: Dec; category: string | null }[];
+  money?: { net_sales: Dec; collected_cash: Dec; collected_mpesa: Dec; deni_given: Dec; deni_repaid: Dec;
+    customers_owe: Dec; expenses: Dec; net_profit: Dec; owed_to_suppliers: Dec };
+}
+export interface StaffUser {
+  id: number; username: string; name: string; email: string; is_active: boolean; role: string; roles: string[];
+  has_pin: boolean; last_login: string | null; sales_today?: number; takings_today?: Dec;
+}
+export interface RolesPage {
+  roles: string[]; level_labels: Record<string, string>; changes: string[];
+  areas: { area: string; privileges: { key: string; label: string; levels: string[]; owner_only: boolean; values: Record<string, string> }[] }[];
+}
+export interface AuditEntry { id: number; created_at: string; action: string; object: string; reason: string; user: string | null; authorised_by: string | null }
+export interface ImportPreview { good: number; bad: number; rows: { row_number: number; name: string; action: string; errors: string[] }[] }
