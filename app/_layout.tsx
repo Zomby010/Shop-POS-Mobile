@@ -53,7 +53,15 @@ export default function RootLayout() {
         <Stack.Screen name="cashups" options={{ title: 'Cash-ups' }} />
         <Stack.Screen name="cashup-record/[id]" options={{ title: 'Cash-up' }} />
         <Stack.Screen name="customer/edit" options={{ title: 'Edit customer', presentation: 'modal' }} />
-        <Stack.Screen name="reports" options={{ title: 'Money and reports' }} />
+        <Stack.Screen name="reports/index" options={{ title: 'Reports' }} />
+        <Stack.Screen name="reports/summary" options={{ title: 'Summary' }} />
+        <Stack.Screen name="reports/profit" options={{ title: 'Profit and loss' }} />
+        <Stack.Screen name="reports/sales" options={{ title: 'Sales by day' }} />
+        <Stack.Screen name="reports/sold" options={{ title: 'Sold items' }} />
+        <Stack.Screen name="reports/movers" options={{ title: 'Fast and slow movers' }} />
+        <Stack.Screen name="reports/stock-movement" options={{ title: 'Stock movement' }} />
+        <Stack.Screen name="reports/purchased" options={{ title: 'Purchased items' }} />
+        <Stack.Screen name="reports/stock-value" options={{ title: 'Stock value' }} />
         <Stack.Screen name="expenses" options={{ title: 'Expenses' }} />
         <Stack.Screen name="stock/receive" options={{ title: 'Receive stock' }} />
         <Stack.Screen name="stock/loss" options={{ title: 'Loss and wastage' }} />

@@ -5,6 +5,7 @@ import { RefreshControl, ScrollView } from 'react-native';
 import { get } from '@/api/client';
 import type { Summary } from '@/api/types';
 import { PeriodPicker } from '@/components/PeriodPicker';
+import { useExcelButton } from '@/components/Report';
 import { Banner, Button, Card, KeyValue, Loading, Muted, T, useColors } from '@/components/ui';
 import { day, money } from '@/lib/format';
 import { type Range, rangeKey, rangeParam, rangeQuery } from '@/lib/period';
@@ -16,13 +17,15 @@ export default function Reports() {
   const router = useRouter();
   const [range, setRange] = useState<Range>({ kind: 'period', period: 'today' });
   const { data: s, error, loading, reload } = useApi(() => get<Summary>('reports/summary/', rangeQuery(range)), [rangeKey(range)]);
+  const [excelError, setExcelError] = useState<string | null>(null);
+  useExcelButton('summary', rangeQuery(range), 'Summary', setExcelError);
   const go = (pathname: '/deni' | '/stock/stock-loss') => router.push({ pathname, params: { range: rangeParam(range) } });
   const tone = (v: string) => (Number(v) < 0 ? c.danger : undefined);
   return (
     <ScrollView style={{ flex: 1, backgroundColor: c.bg }} contentContainerStyle={{ padding: 16, gap: 12 }}
       refreshControl={<RefreshControl refreshing={loading} onRefresh={reload} />}>
       <PeriodPicker value={range} onChange={setRange} />
-      <Banner text={error} />
+      <Banner text={error ?? excelError} />
       {loading && !s ? <Loading /> : null}
       {s ? (
         <>
