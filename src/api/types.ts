@@ -187,10 +187,23 @@ export interface Summary {
 export interface Supplier {
   id: number;
   name: string;
+  contact_person: string;
   phone: string;
+  email: string;
+  address: string;
   kra_pin: string;
+  notes: string;
   active: boolean;
   owed: Dec;
+}
+
+export interface DocumentSummary { id: number; code: string; kind: string; date: string; status: string; status_label: string; total: Dec }
+
+export interface SupplierPage {
+  supplier: Supplier; total_bought: Dec; total_paid: Dec; purchases: PurchaseSummary[];
+  payments: { id: number; date: string; amount: Dec; method: string; method_label: string; note: string;
+    purchase_id: number; purchase: string; cancelled: boolean; user: string | null }[];
+  documents: DocumentSummary[]; can_receive: boolean; can_pay: boolean; can_edit: boolean;
 }
 
 // ---------------------------------------------------------------- products

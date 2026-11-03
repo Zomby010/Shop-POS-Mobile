@@ -42,6 +42,9 @@ export default function RootLayout() {
         <Stack.Screen name="receipt/[id]" options={{ title: 'Sale complete', headerBackVisible: false }} />
         <Stack.Screen name="sale/[id]" options={{ title: 'Sale' }} />
         <Stack.Screen name="customers" options={{ title: 'Customers' }} />
+        <Stack.Screen name="suppliers" options={{ title: 'Suppliers' }} />
+        <Stack.Screen name="supplier/[id]" options={{ title: 'Supplier' }} />
+        <Stack.Screen name="supplier/edit" options={{ title: 'Supplier', presentation: 'modal' }} />
         <Stack.Screen name="customer/[id]" options={{ title: 'Customer' }} />
         <Stack.Screen name="product/[id]" options={{ title: 'Product' }} />
         <Stack.Screen name="product/new" options={{ title: 'Add product' }} />
