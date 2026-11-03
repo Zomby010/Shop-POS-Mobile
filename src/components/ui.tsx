@@ -13,7 +13,7 @@ export const palette = {
     primaryText: '#ffffff', danger: '#b42318', warning: '#b45309', good: '#1f7a4d', chip: '#e8efe9', input: '#ffffff',
   },
   dark: {
-    bg: '#0f1412', card: '#18201c', text: '#e8eee9', muted: '#9aa7a0', border: '#2a3530', primary: '#3fb07a',
+    bg: '#0f1412', card: '#18201c', text: '#f2f6f3', muted: '#b4c0b9', border: '#2a3530', primary: '#4cc78a',
     primaryText: '#08130d', danger: '#f97066', warning: '#f5a524', good: '#3fb07a', chip: '#22302a', input: '#121a16',
   },
 };

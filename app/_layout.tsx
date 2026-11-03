@@ -41,7 +41,12 @@ export default function RootLayout() {
         <Stack.Screen name="scan" options={{ title: 'Scan a barcode', presentation: 'modal' }} />
         <Stack.Screen name="receipt/[id]" options={{ title: 'Sale complete', headerBackVisible: false }} />
         <Stack.Screen name="sale/[id]" options={{ title: 'Sale' }} />
+        <Stack.Screen name="customers" options={{ title: 'Customers' }} />
         <Stack.Screen name="customer/[id]" options={{ title: 'Customer' }} />
+        <Stack.Screen name="product/[id]" options={{ title: 'Product' }} />
+        <Stack.Screen name="product/new" options={{ title: 'Add product' }} />
+        <Stack.Screen name="product/history/[id]" options={{ title: 'Stock history' }} />
+        <Stack.Screen name="categories" options={{ title: 'Categories' }} />
         <Stack.Screen name="customer/new" options={{ title: 'Add customer', presentation: 'modal' }} />
         <Stack.Screen name="held" options={{ title: 'Held sales' }} />
         <Stack.Screen name="cashup" options={{ title: 'Cash-up' }} />
@@ -51,6 +56,13 @@ export default function RootLayout() {
         <Stack.Screen name="stock/loss" options={{ title: 'Loss and wastage' }} />
         <Stack.Screen name="stock/recount" options={{ title: 'Recount' }} />
         <Stack.Screen name="stock/low" options={{ title: 'Low stock' }} />
+        <Stack.Screen name="stock/purchases" options={{ title: 'Purchases' }} />
+        <Stack.Screen name="stock/purchase/[id]" options={{ title: 'Purchase' }} />
+        <Stack.Screen name="stock/convert" options={{ title: 'Convert stock' }} />
+        <Stack.Screen name="stock/takes" options={{ title: 'Stock takes' }} />
+        <Stack.Screen name="stock/take/[id]" options={{ title: 'Stock take' }} />
+        <Stack.Screen name="stock/movements" options={{ title: 'Stock movements' }} />
+        <Stack.Screen name="stock/loss-report" options={{ title: 'Loose-goods loss report' }} />
       </Stack>
     </SafeAreaProvider>
   );

@@ -192,3 +192,154 @@ export interface Supplier {
   active: boolean;
   owed: Dec;
 }
+
+// ---------------------------------------------------------------- products
+
+export interface Choice { value: string; label: string }
+export interface Named { id: number; name: string }
+
+export interface ProductChoices {
+  sold_by: Choice[];
+  sell_mode: Choice[];
+  piece_size_unit: Choice[];
+  categories: Named[];
+  quick_categories: Named[];
+}
+
+export interface ProductList extends ProductChoices {
+  products: Product[];
+  next_offset: number | null;
+  till_count: number;
+}
+
+export interface Movement {
+  id: number;
+  created_at: string;
+  product_id: number;
+  product: string;
+  unit: string;
+  kind: string;
+  kind_label: string;
+  quantity: Dec;
+  stock_before: Dec | null;
+  stock_after: Dec | null;
+  unit_cost: Dec;
+  user: string | null;
+  reason: string;
+  reference: string;
+}
+
+export interface TierRow { id?: number; min_qty: Dec; unit_price: Dec }
+export interface PresetRow { id?: number; text: string; price: Dec | null; label: string; order: number; hidden: boolean }
+
+export interface ProductDetail extends Omit<Product, 'tiers' | 'presets'> {
+  piece_size: Dec | null;
+  piece_size_unit: 'kg' | 'L';
+  sell_mode_setting: 'both' | 'qty' | 'amount';
+  tiers: TierRow[];
+  presets: PresetRow[];
+  recent_movements: Movement[];
+}
+
+export interface CategoryRow { id: number; name: string; description?: string; order: number; active?: boolean; item_count: number }
+
+// ---------------------------------------------------------------- stock
+
+export interface PurchaseSummary {
+  id: number;
+  code: string;
+  date: string;
+  supplier_id: number | null;
+  supplier: string | null;
+  supplier_reference: string;
+  total: Dec;
+  amount_paid: Dec;
+  balance: Dec;
+  payment_status: string;
+  cancelled: boolean;
+  user: string | null;
+  line_count?: number;
+}
+
+export interface PurchaseDetail extends PurchaseSummary {
+  note: string;
+  created_at: string;
+  cancelled_at: string | null;
+  cancelled_by: string | null;
+  cancel_reason: string;
+  lines: { product_id: number; product: string; packs: Dec; pack_size: Dec; pack_cost: Dec; quantity: Dec; unit: string; unit_cost: Dec; line_total: Dec }[];
+  payments: { id: number; date: string; amount: Dec; method: string; method_label: string; note: string; user: string | null }[];
+}
+
+export interface StockOverview {
+  low_stock_count: number;
+  open_stocktake: { id: number; code: string; started_at: string } | null;
+  purchases: PurchaseSummary[];
+  movements: Movement[];
+}
+
+export interface ConversionRow {
+  id: number;
+  code: string;
+  created_at: string;
+  from_product: string;
+  from_qty: Dec;
+  from_unit: string;
+  note: string;
+  user: string | null;
+  lines: { product: string; quantity: Dec; unit: string }[];
+}
+
+export interface StockTake {
+  id: number;
+  code: string;
+  status: 'open' | 'approved' | 'cancelled';
+  status_label: string;
+  note: string;
+  started_at: string;
+  started_by: string | null;
+  approved_at: string | null;
+  approved_by: string | null;
+  line_count?: number;
+}
+
+export interface StockTakeLine {
+  id: number;
+  product_id: number;
+  product: string;
+  unit: string;
+  loose: boolean;
+  category_id: number | null;
+  category: string | null;
+  barcode: string | null;
+  expected_qty: Dec;
+  counted_qty: Dec | null;
+  variance: Dec | null;
+  variance_value?: Dec;
+}
+
+export interface StockTakeSheet {
+  stocktake: StockTake;
+  errors: string[];
+  counted_count: number;
+  total_count: number;
+  variance_value: Dec | null;
+  lines: StockTakeLine[];
+}
+
+export interface LossRow {
+  product_id: number;
+  product: string;
+  unit: string;
+  stocktakes: number;
+  expected: Dec;
+  counted: Dec;
+  variance: Dec;
+  variance_pct: Dec;
+  recorded_losses: Dec;
+  total_loss: Dec;
+  sold: Dec;
+  loss_pct_of_sales: Dec;
+  variance_value?: Dec;
+  recorded_loss_value?: Dec;
+}
