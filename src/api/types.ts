@@ -407,3 +407,19 @@ export interface PurchasedRow extends ProductRef { quantity: Dec; cost: Dec; uni
 export interface PurchasedReport extends ReportRange { rows: PurchasedRow[]; total: Dec }
 export interface StockValueRow { category: string; products: number; at_cost: Dec; at_price: Dec; potential_profit: Dec }
 export interface StockValueReport { rows: StockValueRow[]; total: StockValueRow }
+
+// ---------------------------------------------------------------- invoices and quotations
+
+export interface DocSummary {
+  id: number; code: string; kind: 'invoice' | 'quotation'; kind_label: string; date: string; party: string;
+  party_type: 'customer' | 'supplier' | 'other'; status: string; status_label: string; total: Dec; amount_paid: Dec;
+  balance_due: Dec | null;
+}
+export interface DocLine { id?: number; product_id: number | null; description: string; quantity: Dec; unit: string; unit_price: Dec; line_total?: Dec }
+export interface DocDetail extends DocSummary {
+  party_name: string; party_details: string; valid_until: string | null; due_date: string | null; is_bulk: boolean;
+  discount: Dec; notes: string; created_at: string; customer_id: number | null; supplier_id: number | null;
+  sale_id: number | null; receipt_no: string | null; subtotal: Dec; deni: boolean; created_by: string | null;
+  converted_from: { id: number; code: string } | null; converted_to: { id: number; code: string } | null; lines: DocLine[];
+}
+export interface DocChoices { kinds: Choice[]; party_types: Choice[]; statuses: Choice[] }

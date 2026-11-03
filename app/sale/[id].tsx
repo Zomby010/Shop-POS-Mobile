@@ -1,4 +1,4 @@
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
 import { View } from 'react-native';
 
@@ -16,6 +16,8 @@ export default function Sale() {
   const c = useColors();
   const { id } = useLocalSearchParams<{ id: string }>();
   const user = useSession((s) => s.user);
+  const router = useRouter();
+  const [invoicing, setInvoicing] = useState(false);
   const paper = useSession((s) => s.settings?.paper_width_mm ?? 80);
   const { data: sale, error, loading, setData } = useApi(() => get<SaleDetail>(`sales/${id}/`), [id]);
   const [refunding, setRefunding] = useState(false);
@@ -92,6 +94,20 @@ export default function Sale() {
           <View style={{ flex: 1 }}><Button title="Reprint" kind="secondary" icon="print-outline" onPress={() => void printReceipt(sale.receipt_lines!, paper)} /></View>
           <View style={{ flex: 1 }}><Button title="Share" kind="secondary" icon="share-outline" onPress={() => void shareReceipt(sale.receipt_lines!, paper, sale.receipt_no)} /></View>
         </Row>
+      ) : null}
+
+      {open && sale.customer_id && sale.payments.some((p) => p.method === 'credit') && can(user, 'documents') ? (
+        <Button title="Invoice for this deni" kind="secondary" icon="document-text-outline" busy={invoicing} onPress={async () => {
+          setInvoicing(true);
+          try {
+            const r = await post<{ document: { id: number } }>(`sales/${id}/invoice/`);
+            router.push({ pathname: '/documents/[id]', params: { id: String(r.document.id) } });
+          } catch (e) {
+            setProblem((e as Error).message);
+          } finally {
+            setInvoicing(false);
+          }
+        }} />
       ) : null}
 
       {open && mayRefund && !refunding ? (
