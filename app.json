@@ -1,0 +1,18 @@
+{
+  "expo": {
+    "name": "Shop POS",
+    "slug": "shop-pos-mobile",
+    "scheme": "shoppos",
+    "version": "0.1.0",
+    "orientation": "default",
+    "userInterfaceStyle": "automatic",
+    "android": { "package": "com.shoppos.mobile" },
+    "ios": { "bundleIdentifier": "com.shoppos.mobile", "supportsTablet": true },
+    "plugins": [
+      "expo-router",
+      "expo-secure-store",
+      "expo-sqlite",
+      ["expo-camera", { "cameraPermission": "Shop POS uses the camera to scan barcodes." }]
+    ]
+  }
+}
