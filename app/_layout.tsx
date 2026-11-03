@@ -80,6 +80,13 @@ export default function RootLayout() {
         <Stack.Screen name="stock/stock-loss" options={{ title: 'Stock loss explained' }} />
         <Stack.Screen name="stock/recounts" options={{ title: 'Recount history' }} />
         <Stack.Screen name="deni" options={{ title: 'Deni given and repaid' }} />
+        <Stack.Screen name="today" options={{ title: 'Today' }} />
+        <Stack.Screen name="owner/settings" options={{ title: 'Shop settings' }} />
+        <Stack.Screen name="owner/users" options={{ title: 'Users' }} />
+        <Stack.Screen name="owner/user" options={{ title: 'User', presentation: 'modal' }} />
+        <Stack.Screen name="owner/roles" options={{ title: 'Roles and privileges' }} />
+        <Stack.Screen name="owner/audit" options={{ title: 'Audit log' }} />
+        <Stack.Screen name="owner/import" options={{ title: 'Import and export products' }} />
       </Stack>
     </SafeAreaProvider>
   );

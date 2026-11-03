@@ -5,7 +5,7 @@ import * as Sharing from 'expo-sharing';
 
 import { fileRequest } from '@/api/client';
 
-const XLSX = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+export const XLSX = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
 
 export async function shareFile(path: string, query: Record<string, string | number | undefined>, name: string,
   mimeType: string, uti: string, title: string) {
@@ -27,4 +27,9 @@ export function shareExcel(report: string, query: Record<string, string | number
 
 export function sharePdf(path: string, name: string, title: string) {
   return shareFile(path, {}, name, 'application/pdf', 'com.adobe.pdf', title);
+}
+
+/** An Excel file the website makes outside the reports, such as the products export or the import template. */
+export function shareWorkbook(path: string, name: string, title: string) {
+  return shareFile(path, {}, name, XLSX, 'org.openxmlformats.spreadsheetml.sheet', title);
 }
