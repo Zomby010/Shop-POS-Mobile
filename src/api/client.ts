@@ -78,6 +78,12 @@ export async function request<T>(
   return data as T;
 }
 
+/** The address and headers to fetch a file (such as an Excel report) the way `get` would. */
+export function fileRequest(path: string, query?: Query): { url: string; headers: Record<string, string> } {
+  if (!config.baseUrl) throw new ApiError('Set the shop server address first.', 0);
+  return { url: buildUrl(path, query), headers: config.token ? { Authorization: `Token ${config.token}` } : {} };
+}
+
 export const get = <T>(path: string, query?: Query) => request<T>('GET', path, { query });
 export const post = <T>(path: string, body: unknown = {}) => request<T>('POST', path, { body });
 

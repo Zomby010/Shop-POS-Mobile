@@ -376,3 +376,34 @@ export interface RecountRecord {
   id: number; code: string; created_at: string; kind: string; kind_label: string; note: string; user: string | null;
   movements: (Omit<Movement, 'unit_cost'> & { unit_cost?: Dec })[];
 }
+
+// ---------------------------------------------------------------- reports
+
+interface ReportRange { start: string; end: string; days: number }
+interface ProductRef { product_id: number; product: string; unit: string; category: string | null }
+
+export interface ProfitDayRow {
+  day: string; sales: Dec; refunds: Dec; net_sales: Dec; cost_of_sales: Dec; gross_profit: Dec; expenses: Dec;
+  stock_loss: Dec; net_profit: Dec; margin_pct: Dec;
+}
+export interface ProfitReport extends ReportRange {
+  rows: ProfitDayRow[]; total: ProfitDayRow;
+  expenses_by_category: { category: string; amount: Dec }[]; loss_by_kind: { kind: string; amount: Dec }[];
+}
+export interface SalesDayRow {
+  day: string; count: number; total: Dec; cash: Dec; mpesa: Dec; credit: Dec; refunds: Dec; net: Dec; voided: number;
+  repaid_cash: Dec; repaid_mpesa: Dec; deni_repaid: Dec;
+}
+export interface SalesReport extends ReportRange { rows: SalesDayRow[]; total: SalesDayRow }
+export interface SoldRow extends ProductRef { quantity: Dec; cost: Dec; revenue: Dec; profit: Dec; margin_pct: Dec }
+export interface SoldReport extends ReportRange { sort: string; rows: SoldRow[]; totals: { revenue: Dec; cost: Dec; profit: Dec } }
+export interface MoverRow extends ProductRef {
+  speed: 'fast' | 'slow' | 'none'; quantity: Dec; per_day: Dec; revenue: Dec; profit: Dec; stock_qty: Dec; days_left: Dec | null;
+}
+export interface MoversReport extends ReportRange { rows: MoverRow[] }
+export interface StockMovementRow extends ProductRef { opening: Dec; values: Record<string, Dec>; closing: Dec; unit_cost: Dec; value: Dec }
+export interface StockMovementReport extends ReportRange { columns: { key: string; label: string }[]; rows: StockMovementRow[]; total_value: Dec }
+export interface PurchasedRow extends ProductRef { quantity: Dec; cost: Dec; unit_cost: Dec; purchases: number; suppliers: string }
+export interface PurchasedReport extends ReportRange { rows: PurchasedRow[]; total: Dec }
+export interface StockValueRow { category: string; products: number; at_cost: Dec; at_price: Dec; potential_profit: Dec }
+export interface StockValueReport { rows: StockValueRow[]; total: StockValueRow }
