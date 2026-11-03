@@ -179,7 +179,7 @@ export interface Summary {
   average_sale: Dec;
   paid_by: { cash: Dec; mpesa: Dec; credit: Dec };
   collected: { cash: Dec; mpesa: Dec; total: Dec };
-  deni: { given: Dec; repaid: Dec; owed_now: Dec };
+  deni: { given: Dec; repaid: Dec; owed_now: Dec; repaid_cash: Dec; repaid_mpesa: Dec };
   profit: { cost_of_sales: Dec; gross_profit: Dec; margin_pct: Dec; expenses: Dec; stock_loss: Dec; net_profit: Dec };
   suppliers: { bought: Dec; paid: Dec; owed: Dec };
 }
@@ -342,4 +342,37 @@ export interface LossRow {
   loss_pct_of_sales: Dec;
   variance_value?: Dec;
   recorded_loss_value?: Dec;
+}
+
+export interface SalesTotals {
+  cash: Dec; mpesa: Dec; credit: Dec; total: Dec; refunded: Dec; net: Dec; credit_due: Dec; count: number;
+  deni_given: Dec; deni_repaid: { cash: Dec; mpesa: Dec; total: Dec };
+}
+
+export interface DeniEntry {
+  id: number; created_at: string; kind: 'charge' | 'repayment'; amount: Dec; method: 'cash' | 'mpesa' | null;
+  label: string; customer_id: number; customer: string; sale_id: number | null; receipt_no: string | null;
+  note: string; user: string | null;
+}
+
+export interface DeniActivity {
+  start: string; end: string; owed_now: Dec; entries: DeniEntry[];
+  totals: { given: Dec; repaid: Dec; repaid_cash: Dec; repaid_mpesa: Dec; cleared: Dec };
+}
+
+/** A loss, recount or stock-take change. `value` is quantity × cost at the time, for those who see cost. */
+export interface StockChange extends Omit<Movement, 'unit_cost'> { value?: Dec }
+
+export interface StockLossRow {
+  product_id: number; product: string; unit: string; lost_qty: Dec; found_qty: Dec; net_qty: Dec;
+  lost_value?: Dec; found_value?: Dec; stock_loss?: Dec; movements: StockChange[];
+}
+
+export interface StockLoss {
+  start: string; end: string; lost_value?: Dec; found_value?: Dec; stock_loss?: Dec; rows: StockLossRow[];
+}
+
+export interface RecountRecord {
+  id: number; code: string; created_at: string; kind: string; kind_label: string; note: string; user: string | null;
+  movements: (Omit<Movement, 'unit_cost'> & { unit_cost?: Dec })[];
 }

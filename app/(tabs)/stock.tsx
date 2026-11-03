@@ -38,6 +38,8 @@ export default function Stock() {
         {item(can(user, 'adjust_stock'), 'Loss and wastage', 'Spillage, expiry, damage', '/stock/loss')}
         {item(can(user, 'stock_history'), 'Low stock', data ? `${data.low_stock_count} to reorder` : 'What to reorder', '/stock/low')}
         {item(can(user, 'stock_history'), 'Movements', 'Every stock change, with filters', '/stock/movements')}
+        {item(can(user, 'adjust_stock', 'stock_history'), 'Recount history', 'Every recount, what changed and why', '/stock/recounts')}
+        {item(can(user, 'reports', 'loss_report'), 'Stock loss explained', 'Lost and found per product, with reasons', '/stock/stock-loss')}
         {item(can(user, 'loss_report'), 'Loose-goods loss report', 'Expected against counted kg and litres', '/stock/loss-report')}
       </Card>
       {data?.purchases.length && can(user, 'receive_stock', 'pay_supplier', 'cancel_purchase') ? (

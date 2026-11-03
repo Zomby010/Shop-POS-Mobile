@@ -1,20 +1,27 @@
+import { useRouter } from 'expo-router';
 import { useState } from 'react';
+import { RefreshControl, ScrollView } from 'react-native';
 
 import { get } from '@/api/client';
 import type { Summary } from '@/api/types';
-import { Banner, Card, ChipRow, KeyValue, Loading, Muted, Screen, T, useColors } from '@/components/ui';
-import { PERIODS, type Period, day, money } from '@/lib/format';
+import { PeriodPicker } from '@/components/PeriodPicker';
+import { Banner, Button, Card, KeyValue, Loading, Muted, T, useColors } from '@/components/ui';
+import { day, money } from '@/lib/format';
+import { type Range, rangeKey, rangeParam, rangeQuery } from '@/lib/period';
 import { useApi } from '@/lib/useApi';
 
 /** The website's Summary report: sales, how customers paid, money collected, deni, profit and suppliers. */
 export default function Reports() {
   const c = useColors();
-  const [period, setPeriod] = useState<Period>('today');
-  const { data: s, error, loading } = useApi(() => get<Summary>('reports/summary/', { period }), [period]);
+  const router = useRouter();
+  const [range, setRange] = useState<Range>({ kind: 'period', period: 'today' });
+  const { data: s, error, loading, reload } = useApi(() => get<Summary>('reports/summary/', rangeQuery(range)), [rangeKey(range)]);
+  const go = (pathname: '/deni' | '/stock/stock-loss') => router.push({ pathname, params: { range: rangeParam(range) } });
   const tone = (v: string) => (Number(v) < 0 ? c.danger : undefined);
   return (
-    <Screen>
-      <ChipRow options={[...PERIODS]} value={period} onChange={setPeriod} />
+    <ScrollView style={{ flex: 1, backgroundColor: c.bg }} contentContainerStyle={{ padding: 16, gap: 12 }}
+      refreshControl={<RefreshControl refreshing={loading} onRefresh={reload} />}>
+      <PeriodPicker value={range} onChange={setRange} />
       <Banner text={error} />
       {loading && !s ? <Loading /> : null}
       {s ? (
@@ -42,9 +49,12 @@ export default function Reports() {
           </Card>
           <Card>
             <T weight="600">Deni</T>
-            <KeyValue label="Given" value={money(s.deni.given)} />
-            <KeyValue label="Repaid" value={money(s.deni.repaid)} />
-            <KeyValue label="Customers owe now" value={money(s.deni.owed_now)} strong />
+            <KeyValue label="Given on deni" value={money(s.deni.given)} />
+            <KeyValue label="Repaid in cash" value={money(s.deni.repaid_cash)} />
+            <KeyValue label="Repaid by M-Pesa" value={money(s.deni.repaid_mpesa)} />
+            <KeyValue label="Repaid in total" value={money(s.deni.repaid)} />
+            <KeyValue label="Customers owe now (all time)" value={money(s.deni.owed_now)} strong color={Number(s.deni.owed_now) > 0 ? c.danger : undefined} />
+            <Button title="Who was given and who repaid" kind="ghost" small onPress={() => go('/deni')} />
           </Card>
           <Card>
             <T weight="600">Profit</T>
@@ -52,6 +62,7 @@ export default function Reports() {
             <KeyValue label={`Gross profit (${s.profit.margin_pct}%)`} value={money(s.profit.gross_profit)} />
             <KeyValue label="Expenses" value={money(s.profit.expenses)} />
             <KeyValue label="Stock loss" value={money(s.profit.stock_loss)} />
+            <Button title="What changed in stock" kind="ghost" small onPress={() => go('/stock/stock-loss')} />
             <KeyValue label="Net profit" value={money(s.profit.net_profit)} strong color={tone(s.profit.net_profit)} />
           </Card>
           <Card>
@@ -62,6 +73,6 @@ export default function Reports() {
           </Card>
         </>
       ) : null}
-    </Screen>
+    </ScrollView>
   );
 }

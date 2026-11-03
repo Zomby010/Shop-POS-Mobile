@@ -63,6 +63,9 @@ export default function RootLayout() {
         <Stack.Screen name="stock/take/[id]" options={{ title: 'Stock take' }} />
         <Stack.Screen name="stock/movements" options={{ title: 'Stock movements' }} />
         <Stack.Screen name="stock/loss-report" options={{ title: 'Loose-goods loss report' }} />
+        <Stack.Screen name="stock/stock-loss" options={{ title: 'Stock loss explained' }} />
+        <Stack.Screen name="stock/recounts" options={{ title: 'Recount history' }} />
+        <Stack.Screen name="deni" options={{ title: 'Deni given and repaid' }} />
       </Stack>
     </SafeAreaProvider>
   );

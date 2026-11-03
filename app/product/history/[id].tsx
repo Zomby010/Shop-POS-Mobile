@@ -4,8 +4,10 @@ import { View } from 'react-native';
 
 import { get } from '@/api/client';
 import type { Choice, Dec, Movement } from '@/api/types';
+import { PeriodPicker } from '@/components/PeriodPicker';
 import { Banner, Card, ChipRow, Empty, KeyValue, ListItem, Loading, Muted, Screen, T } from '@/components/ui';
 import { dateTime, money, qty } from '@/lib/format';
+import { type Range, parseRange, rangeKey, rangeQuery } from '@/lib/period';
 import { useApi } from '@/lib/useApi';
 
 interface History {
@@ -17,10 +19,11 @@ interface History {
 
 /** Every stock movement of one product with before and after figures, plus its price changes. */
 export default function ProductHistory() {
-  const { id } = useLocalSearchParams<{ id: string }>();
+  const { id, range: param } = useLocalSearchParams<{ id: string; range?: string }>();
   const [kind, setKind] = useState('');
+  const [range, setRange] = useState<Range>(parseRange(param, { kind: 'all' }));
   const [tab, setTab] = useState<'stock' | 'prices'>('stock');
-  const { data, error, loading } = useApi(() => get<History>(`products/${id}/history/`, { kind }), [id, kind]);
+  const { data, error, loading } = useApi(() => get<History>(`products/${id}/history/`, { kind, ...rangeQuery(range) }), [id, kind, rangeKey(range)]);
   if (loading && !data) return <Loading />;
   if (!data) return <Screen><Banner text={error} /></Screen>;
   return (
@@ -32,7 +35,8 @@ export default function ProductHistory() {
       <ChipRow value={tab} onChange={setTab} options={[{ value: 'stock', label: 'Stock changes' }, { value: 'prices', label: 'Price changes' }]} />
       {tab === 'stock' ? (
         <>
-          <ChipRow value={kind} onChange={setKind} options={[{ value: '', label: 'All' }, ...data.kinds]} />
+          <PeriodPicker value={range} onChange={setRange} allowAll />
+          <ChipRow value={kind} onChange={setKind} options={[{ value: '', label: 'All types' }, ...data.kinds]} />
           <Card style={{ padding: 0, overflow: 'hidden' }}>
             {data.movements.length ? data.movements.map((m) => (
               <ListItem key={m.id} title={`${m.kind_label}${m.reference ? ` · ${m.reference}` : ''}`}
