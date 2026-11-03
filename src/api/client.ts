@@ -42,7 +42,7 @@ function buildUrl(path: string, query?: Query) {
 export async function request<T>(
   method: 'GET' | 'POST',
   path: string,
-  { query, body, timeoutMs = 20000 }: { query?: Query; body?: unknown; timeoutMs?: number } = {},
+  { query, body, form, timeoutMs = 20000 }: { query?: Query; body?: unknown; form?: FormData; timeoutMs?: number } = {},
 ): Promise<T> {
   if (!config.baseUrl) throw new ApiError('Set the shop server address first.', 0);
   const controller = new AbortController();
@@ -53,10 +53,10 @@ export async function request<T>(
       method,
       headers: {
         Accept: 'application/json',
-        ...(body !== undefined ? { 'Content-Type': 'application/json' } : {}),
+        ...(body !== undefined && !form ? { 'Content-Type': 'application/json' } : {}),
         ...(config.token ? { Authorization: `Token ${config.token}` } : {}),
       },
-      body: body !== undefined ? JSON.stringify(body) : undefined,
+      body: form ?? (body !== undefined ? JSON.stringify(body) : undefined),
       signal: controller.signal,
     });
   } catch {
@@ -78,8 +78,16 @@ export async function request<T>(
   return data as T;
 }
 
+/** The address and headers to fetch a file (such as an Excel report) the way `get` would. */
+export function fileRequest(path: string, query?: Query): { url: string; headers: Record<string, string> } {
+  if (!config.baseUrl) throw new ApiError('Set the shop server address first.', 0);
+  return { url: buildUrl(path, query), headers: config.token ? { Authorization: `Token ${config.token}` } : {} };
+}
+
 export const get = <T>(path: string, query?: Query) => request<T>('GET', path, { query });
 export const post = <T>(path: string, body: unknown = {}) => request<T>('POST', path, { body });
+/** A multipart upload, such as the products workbook. */
+export const upload = <T>(path: string, form: FormData) => request<T>('POST', path, { form, timeoutMs: 60000 });
 
 /** A unique id for actions the server should apply only once, even if the app retries. */
 export function requestId(): string {

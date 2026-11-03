@@ -41,7 +41,7 @@ export default function StockLossScreen() {
                 <KeyValue label="Found (counts higher than the books)" value={money(data.found_value)} />
                 <KeyValue label="Stock loss" value={money(data.stock_loss)} strong color={tone(data.stock_loss)} />
                 <Muted size={12}>
-                  Stock loss is what was lost less what counts found, at cost. It is the same figure as in Money and reports.
+                  Stock loss is what was lost less what counts found, at cost. It is the same figure as in the Summary and Profit and loss.
                   {isNegative(data.stock_loss) ? ' It is below zero because counts found more stock than was lost, which adds to profit.' : ''}
                 </Muted>
               </Card>

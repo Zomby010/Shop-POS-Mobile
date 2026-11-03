@@ -53,7 +53,21 @@ export default function RootLayout() {
         <Stack.Screen name="customer/new" options={{ title: 'Add customer', presentation: 'modal' }} />
         <Stack.Screen name="held" options={{ title: 'Held sales' }} />
         <Stack.Screen name="cashup" options={{ title: 'Cash-up' }} />
-        <Stack.Screen name="reports" options={{ title: 'Money and reports' }} />
+        <Stack.Screen name="cashups" options={{ title: 'Cash-ups' }} />
+        <Stack.Screen name="cashup-record/[id]" options={{ title: 'Cash-up' }} />
+        <Stack.Screen name="customer/edit" options={{ title: 'Edit customer', presentation: 'modal' }} />
+        <Stack.Screen name="documents/index" options={{ title: 'Invoices and quotations' }} />
+        <Stack.Screen name="documents/[id]" options={{ title: 'Document' }} />
+        <Stack.Screen name="documents/edit" options={{ title: 'Invoice or quotation', presentation: 'modal' }} />
+        <Stack.Screen name="reports/index" options={{ title: 'Reports' }} />
+        <Stack.Screen name="reports/summary" options={{ title: 'Summary' }} />
+        <Stack.Screen name="reports/profit" options={{ title: 'Profit and loss' }} />
+        <Stack.Screen name="reports/sales" options={{ title: 'Sales by day' }} />
+        <Stack.Screen name="reports/sold" options={{ title: 'Sold items' }} />
+        <Stack.Screen name="reports/movers" options={{ title: 'Fast and slow movers' }} />
+        <Stack.Screen name="reports/stock-movement" options={{ title: 'Stock movement' }} />
+        <Stack.Screen name="reports/purchased" options={{ title: 'Purchased items' }} />
+        <Stack.Screen name="reports/stock-value" options={{ title: 'Stock value' }} />
         <Stack.Screen name="expenses" options={{ title: 'Expenses' }} />
         <Stack.Screen name="stock/receive" options={{ title: 'Receive stock' }} />
         <Stack.Screen name="stock/loss" options={{ title: 'Loss and wastage' }} />
@@ -69,6 +83,13 @@ export default function RootLayout() {
         <Stack.Screen name="stock/stock-loss" options={{ title: 'Stock loss explained' }} />
         <Stack.Screen name="stock/recounts" options={{ title: 'Recount history' }} />
         <Stack.Screen name="deni" options={{ title: 'Deni given and repaid' }} />
+        <Stack.Screen name="today" options={{ title: 'Today' }} />
+        <Stack.Screen name="owner/settings" options={{ title: 'Shop settings' }} />
+        <Stack.Screen name="owner/users" options={{ title: 'Users' }} />
+        <Stack.Screen name="owner/user" options={{ title: 'User', presentation: 'modal' }} />
+        <Stack.Screen name="owner/roles" options={{ title: 'Roles and privileges' }} />
+        <Stack.Screen name="owner/audit" options={{ title: 'Audit log' }} />
+        <Stack.Screen name="owner/import" options={{ title: 'Import and export products' }} />
       </Stack>
     </SafeAreaProvider>
   );
