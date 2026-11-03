@@ -9,9 +9,9 @@ It talks to the Shop POS website's JSON API (`/api/v1/`), so the app and the web
 - **Sell**: scan with the camera or type a barcode (`12*barcode` for a quantity), search by name, quick-sale tabs, loose goods by quantity or by amount, bulk tiers, presets, items not in the system, hold and resume sales.
 - **Pay**: cash, M-Pesa, card, deni (credit) or a split, change worked out like the till, printable/shareable receipt.
 - **Sales**: today's and past sales, receipt reprint, refunds and voids with the owner's PIN.
-- **Customers**: balances, deni history, repayments.
-- **Stock**: low stock, receiving purchases, losses and recounts.
-- **More**: expenses, cash-up, reports summary, sign out.
+- **Products**: search and filter, add and edit products (prices, bulk tiers, quick-sale buttons, alert levels), check items added at the till, categories and quick-sale tabs, stock history.
+- **Stock**: overview, receiving and past purchases, paying suppliers, recounts, converting stock, stock takes, losses, low stock, movements and the loose-goods loss report.
+- **More**: customers (balances, deni history, repayments), held sales, expenses, cash-up, reports summary, sign out.
 
 Privileges come from the website: a user only sees what they are allowed to do, and actions that need the owner's PIN ask for it.
 

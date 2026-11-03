@@ -17,12 +17,13 @@ export default function More() {
         <Muted size={12}>{server}</Muted>
       </Card>
       <Card style={{ padding: 0, overflow: 'hidden' }}>
+        {can(user, 'customers') ? <ListItem title="Customers" subtitle="Deni balances and repayments" onPress={() => router.push('/customers')} /> : null}
         {can(user, 'sell') ? <ListItem title="Held sales" onPress={() => router.push('/held')} /> : null}
         {can(user, 'cashup') ? <ListItem title="Cash-up" subtitle="End of shift" onPress={() => router.push('/cashup')} /> : null}
         {can(user, 'reports') ? <ListItem title="Money and reports" subtitle="Today's sales, profit and deni" onPress={() => router.push('/reports')} /> : null}
         {can(user, 'reports') ? <ListItem title="Expenses" subtitle="Rent, transport, wages…" onPress={() => router.push('/expenses')} /> : null}
       </Card>
-      <Muted size={12}>Products, prices, users, invoices and settings are managed on the website.</Muted>
+      <Muted size={12}>Users, invoices, full reports and shop settings are managed on the website.</Muted>
       <Button title="Sign out" kind="secondary" icon="log-out-outline" onPress={async () => {
         useCart.getState().clear();
         await useCatalog.getState().clear();
