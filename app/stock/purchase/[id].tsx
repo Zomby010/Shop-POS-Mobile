@@ -12,10 +12,11 @@ import { can, useSession } from '@/store/session';
 
 /** One delivery: what came in, what was paid, pay the supplier, or cancel it. */
 export default function Purchase() {
-  const { id } = useLocalSearchParams<{ id: string }>();
+  const { id, pay } = useLocalSearchParams<{ id: string; pay?: string }>();
   const user = useSession((s) => s.user);
   const { data, error, loading, setData } = useApi(() => get<{ purchase: PurchaseDetail; methods: Choice[] }>(`purchases/${id}/`), [id]);
   const [paying, setPaying] = useState(false);
+  const [autoPay, setAutoPay] = useState(pay === '1');
   const [amount, setAmount] = useState('');
   const [method, setMethod] = useState('cash');
   const [note, setNote] = useState('');
@@ -29,6 +30,8 @@ export default function Purchase() {
   if (!data) return <Screen><Banner text={error} /></Screen>;
   const p = data.purchase;
   const owed = !p.cancelled && Number(p.balance) > 0;
+  // Opened from a supplier's "Pay supplier": go straight to the payment form for what is still owed.
+  if (autoPay && owed && can(user, 'pay_supplier')) { setAutoPay(false); setAmount(p.balance); setPaying(true); }
 
   const run = async (path: string, body: Record<string, unknown>, done: string) => {
     setBusy(true); setMsg(null);

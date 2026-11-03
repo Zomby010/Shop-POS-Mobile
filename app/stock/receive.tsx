@@ -1,4 +1,5 @@
-import { useRef, useState } from 'react';
+import { useLocalSearchParams } from 'expo-router';
+import { useEffect, useRef, useState } from 'react';
 import { View } from 'react-native';
 
 import { get, post, requestId } from '@/api/client';
@@ -19,6 +20,12 @@ export default function Receive() {
   const user = useSession((s) => s.user);
   const { data } = useApi(() => get<{ suppliers: Supplier[] }>('suppliers/'));
   const [supplier, setSupplier] = useState<Supplier | null>(null);
+  const { supplier: preset } = useLocalSearchParams<{ supplier?: string }>();
+  // Opened from a supplier's page: start with that supplier chosen.
+  useEffect(() => {
+    if (preset && !supplier) setSupplier(data?.suppliers.find((x) => String(x.id) === preset) ?? null);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data, preset]);
   const [supplierTerm, setSupplierTerm] = useState('');
   const [items, setItems] = useState<Item[]>([]);
   const [ref, setRef] = useState('');
