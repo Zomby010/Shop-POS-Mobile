@@ -20,13 +20,14 @@ export default function StockTakeScreen() {
   const user = useSession((s) => s.user);
   const categories: Named[] = useCatalog((s) => s.catalog?.categories ?? []);
   const [category, setCategory] = useState('');
-  const [uncounted, setUncounted] = useState(false);
+  const [show, setShow] = useState<'' | 'uncounted' | 'changed'>('');
+  const uncounted = show === 'uncounted';
   const [term, setTerm] = useState('');
   const [typed, setTyped] = useState<Record<number, string>>({});
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<{ text: string; kind: 'good' | 'danger' } | null>(null);
   const { data, error, loading, reload, setData } = useApi(
-    () => get<StockTakeSheet>(`stocktakes/${id}/`, { category, uncounted: uncounted ? 1 : '' }), [id, category, uncounted]);
+    () => get<StockTakeSheet>(`stocktakes/${id}/`, { category, uncounted: uncounted ? 1 : '', changed: show === 'changed' ? 1 : '' }), [id, category, show]);
 
   useFocusEffect(useCallback(() => {
     const code = useScan.getState().take('stocktake');
@@ -45,7 +46,7 @@ export default function StockTakeScreen() {
   const save = async () => {
     setBusy(true); setMsg(null);
     try {
-      const r = await post<StockTakeSheet>(`stocktakes/${id}/?category=${category}${uncounted ? '&uncounted=1' : ''}`, { counts: typed });
+      const r = await post<StockTakeSheet>(`stocktakes/${id}/?category=${category}${uncounted ? '&uncounted=1' : ''}${show === 'changed' ? '&changed=1' : ''}`, { counts: typed });
       setData(r); setTyped({});
       setMsg(r.errors.length ? { text: r.errors.join(' '), kind: 'danger' } : { text: 'Counts saved.', kind: 'good' });
     } catch (e) {
@@ -89,7 +90,8 @@ export default function StockTakeScreen() {
         </Pressable>
       </Row>
       <ChipRow value={category} onChange={setCategory} options={[{ value: '', label: 'All categories' }, ...categories.map((x) => ({ value: String(x.id), label: x.name }))]} />
-      <ChipRow value={uncounted ? 'u' : ''} onChange={(v) => setUncounted(v === 'u')} options={[{ value: '', label: 'All' }, { value: 'u', label: 'Not counted yet' }]} />
+      <ChipRow value={show} onChange={setShow} options={[{ value: '' as const, label: 'All' },
+        ...(open ? [{ value: 'uncounted' as const, label: 'Not counted yet' }] : []), { value: 'changed' as const, label: 'Differences only' }]} />
     </View>
   ) : undefined;
 

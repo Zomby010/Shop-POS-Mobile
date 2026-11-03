@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { View } from 'react-native';
-
 import { get } from '@/api/client';
 import type { LossRow } from '@/api/types';
-import { Banner, Button, Card, Empty, Field, KeyValue, Loading, Muted, Row, Screen, T, useColors } from '@/components/ui';
+import { PeriodPicker } from '@/components/PeriodPicker';
+import { Banner, Card, Empty, KeyValue, Loading, Muted, Screen, T, useColors } from '@/components/ui';
 import { money, qty } from '@/lib/format';
+import { type Range, rangeKey, rangeQuery } from '@/lib/period';
 import { useApi } from '@/lib/useApi';
 
 const pct = (v: string) => `${Number(v).toFixed(1)}%`;
@@ -12,17 +12,12 @@ const pct = (v: string) => `${Number(v).toFixed(1)}%`;
 /** Weighed and measured goods: what the stock takes expected against what was counted, plus recorded losses. */
 export default function LossReport() {
   const c = useColors();
-  const [start, setStart] = useState('');
-  const [end, setEnd] = useState('');
-  const { data, error, loading, reload } = useApi(() => get<{ rows: LossRow[] }>('loss-report/', { start, end }));
+  const [range, setRange] = useState<Range>({ kind: 'all' });
+  const { data, error, loading } = useApi(() => get<{ rows: LossRow[] }>('loss-report/', rangeQuery(range)), [rangeKey(range)]);
   return (
     <Screen>
-      <Muted>From approved stock takes and recorded losses. Dates are optional (YYYY-MM-DD).</Muted>
-      <Row>
-        <View style={{ flex: 1 }}><Field placeholder="From" value={start} onChangeText={setStart} /></View>
-        <View style={{ flex: 1 }}><Field placeholder="To" value={end} onChangeText={setEnd} /></View>
-      </Row>
-      <Button title="Show" small kind="secondary" onPress={reload} />
+      <Muted>From approved stock takes and recorded losses.</Muted>
+      <PeriodPicker value={range} onChange={setRange} allowAll />
       <Banner text={error} />
       {loading && !data ? <Loading /> : null}
       {data && !data.rows.length ? <Empty text="Nothing to report yet." /> : null}

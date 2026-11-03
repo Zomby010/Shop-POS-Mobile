@@ -3,27 +3,30 @@ import { FlatList, RefreshControl, View } from 'react-native';
 
 import { get } from '@/api/client';
 import type { Choice, Movement, Product } from '@/api/types';
+import { PeriodPicker } from '@/components/PeriodPicker';
 import { ProductPicker } from '@/components/ProductPicker';
 import { Banner, Button, ChipRow, Empty, ListItem, Row, T } from '@/components/ui';
 import { dateTime, qty } from '@/lib/format';
+import { type Range, rangeKey, rangeQuery } from '@/lib/period';
 import { useApi } from '@/lib/useApi';
 
 interface Page { kinds: Choice[]; movements: Movement[]; next_offset: number | null }
 
-/** Every stock change, newest first, filtered by type or product. */
+/** Every stock change, newest first, filtered by period, type or product. */
 export default function Movements() {
   const [kind, setKind] = useState('');
+  const [range, setRange] = useState<Range>({ kind: 'all' });
   const [product, setProduct] = useState<Product | null>(null);
   const [more, setMore] = useState<Movement[]>([]);
   const [next, setNext] = useState<number | null>(null);
   const { data, error, loading, reload } = useApi(async () => {
-    const r = await get<Page>('movements/', { kind, product: product?.id });
+    const r = await get<Page>('movements/', { kind, product: product?.id, ...rangeQuery(range) });
     setMore([]); setNext(r.next_offset);
     return r;
-  }, [kind, product]);
+  }, [kind, product, rangeKey(range)]);
   const loadMore = async () => {
     if (next === null) return;
-    const r = await get<Page>('movements/', { kind, product: product?.id, offset: next });
+    const r = await get<Page>('movements/', { kind, product: product?.id, ...rangeQuery(range), offset: next });
     setMore((m) => [...m, ...r.movements]); setNext(r.next_offset);
   };
   return (
@@ -34,6 +37,7 @@ export default function Movements() {
       refreshControl={<RefreshControl refreshing={loading} onRefresh={reload} />}
       ListHeaderComponent={
         <View style={{ padding: 12, gap: 10 }}>
+          <PeriodPicker value={range} onChange={setRange} allowAll />
           <ChipRow value={kind} onChange={setKind} options={[{ value: '', label: 'All types' }, ...(data?.kinds ?? [])]} />
           {product ? (
             <Row style={{ justifyContent: 'space-between' }}>
