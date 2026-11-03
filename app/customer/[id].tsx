@@ -1,6 +1,7 @@
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useRef, useState } from 'react';
-import { Linking, View } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { useFocusEffect, useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
+import { useCallback, useLayoutEffect, useRef, useState } from 'react';
+import { Linking, Pressable, View } from 'react-native';
 
 import { get, post, requestId } from '@/api/client';
 import type { CustomerDetail } from '@/api/types';
@@ -22,6 +23,17 @@ export default function CustomerScreen() {
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<{ text: string; kind: 'good' | 'danger' } | null>(null);
   const attempt = useRef(requestId());
+  const navigation = useNavigation();
+  useFocusEffect(useCallback(() => { void reload(); }, [reload]));
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <Pressable onPress={() => router.push({ pathname: '/customer/edit', params: { id } })} hitSlop={12} style={{ padding: 8 }} accessibilityLabel="Edit customer">
+          <Ionicons name="create-outline" size={22} color={c.text} />
+        </Pressable>
+      ),
+    });
+  }, [navigation, router, c, id]);
 
   if (!data) return <Screen>{loading ? <Loading /> : <Banner text={error} />}</Screen>;
 
@@ -44,7 +56,7 @@ export default function CustomerScreen() {
   return (
     <Screen>
       <Card>
-        <T size={20} weight="700">{data.name}</T>
+        <T size={20} weight="700">{data.name}{data.active ? '' : ' (inactive)'}</T>
         {data.phone ? <Muted>{data.phone}</Muted> : null}
         <KeyValue label="Owes" value={money(data.balance)} strong color={Number(data.balance) > 0 ? c.warning : undefined} />
         <KeyValue label="Credit limit" value={data.credit_limit ? money(data.credit_limit) : 'No limit'} />
